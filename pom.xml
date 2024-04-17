@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.yellowdot</groupId>
-	<artifactId>yellowdot-api</artifactId>
+	<artifactId>beehome-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>yellowdot-api</name>
 	<description>Project for Cleaners</description>
