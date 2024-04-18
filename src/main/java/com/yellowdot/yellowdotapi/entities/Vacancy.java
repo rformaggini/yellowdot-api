@@ -6,13 +6,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.Instant;
 
 @Entity
-@Table(name = "tb_jobs")
-public class Job {
+@Table(name = "tb_vacancies")
+public class Vacancy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "job_id")
-    private Long jobId;
+    @Column(name = "vacancy_id")
+    private Long vacancyId;
 
     private String description;
 
@@ -24,11 +24,11 @@ public class Job {
     private Instant createdAt;
 
     public Long getJobId() {
-        return jobId;
+        return vacancyId;
     }
 
-    public void setJobId(Long jobId) {
-        this.jobId = jobId;
+    public void setJobId(Long vacancyId) {
+        this.vacancyId = vacancyId;
     }
 
     public String getDescription() {
