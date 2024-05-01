@@ -1,4 +1,4 @@
-package com.yellowdot.yellowdotapi.controller;
+package com.yellowdot.yellowdotapi.controllers;
 
 import com.yellowdot.yellowdotapi.dtos.LoginRequest;
 import com.yellowdot.yellowdotapi.dtos.LoginResponse;
