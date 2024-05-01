@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.yellowdot</groupId>
-	<artifactId>beehome-api</artifactId>
+	<artifactId>pubonline-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>yellowdot-api</name>
-	<description>Project for Cleaners</description>
+	<description>Pub project to self orders</description>
 	<properties>
 		<java.version>21</java.version>
 	</properties>
@@ -32,6 +32,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.5.5.Final</version>
 		</dependency>
 
 		<dependency>
