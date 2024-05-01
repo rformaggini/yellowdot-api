@@ -1,5 +1,6 @@
 package com.yellowdot.yellowdotapi.entities;
 
+import com.yellowdot.yellowdotapi.enums.UserStatus;
 import com.yellowdot.yellowdotapi.dtos.LoginRequest;
 import jakarta.persistence.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,9 @@ public class User {
 
     @Column(unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
@@ -74,5 +78,13 @@ public class User {
 
     public boolean isLoginCorrect(LoginRequest loginRequest, PasswordEncoder passwordEncoder){
         return passwordEncoder.matches(loginRequest.password(), this.password);
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 }
