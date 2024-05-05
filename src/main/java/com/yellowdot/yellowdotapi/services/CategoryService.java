@@ -1,12 +1,14 @@
 package com.yellowdot.yellowdotapi.services;
 
 import com.yellowdot.yellowdotapi.dtos.CategoryDto;
-import org.springframework.stereotype.Service;
+import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 
 import java.util.List;
 
-@Service
 public interface CategoryService {
     List<CategoryDto> getAllCategories();
     CategoryDto addNewCategory(CategoryDto categoryDto);
+    CategoryDto updateCategory(CategoryDto categoryDto) throws EntityNotFoundException;
+    void deleteCategory(Integer categoryId) throws EntityNotFoundException;
+
 }

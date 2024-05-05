@@ -4,7 +4,9 @@ public enum MessagesCode {
 
     LG001("Username or email already in use.", "LG-001"),
     LG002("User created successfully.", "LG-002"),
-    LG003("User data or password invalid.", "LG-003")
+    LG003("User data or password invalid.", "LG-003"),
+    DB001("Entity not found.", "DB-001"),
+    DB002("Entity deleted successfully.", "DB-002")
     ;
     private String message;
     private String code;
