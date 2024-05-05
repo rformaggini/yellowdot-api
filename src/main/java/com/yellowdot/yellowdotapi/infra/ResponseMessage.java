@@ -1,12 +1,18 @@
 package com.yellowdot.yellowdotapi.infra;
 
-public class ResponseErrorMessage {
+public class ResponseMessage {
     private String code;
     private String message;
+    private boolean hasError;
 
-    public ResponseErrorMessage(String code, String message) {
+    public ResponseMessage(String code, String message, boolean hasError) {
         this.code = code;
         this.message = message;
+        this.hasError = hasError;
+    }
+
+    public ResponseMessage(){
+
     }
 
     public String getCode() {
@@ -23,5 +29,13 @@ public class ResponseErrorMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isHasError() {
+        return hasError;
+    }
+
+    public void setHasError(boolean hasError) {
+        this.hasError = hasError;
     }
 }

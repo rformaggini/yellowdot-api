@@ -3,17 +3,18 @@ package com.yellowdot.yellowdotapi.services.impl;
 import com.yellowdot.yellowdotapi.dtos.CreateUserDto;
 import com.yellowdot.yellowdotapi.entities.Role;
 import com.yellowdot.yellowdotapi.entities.User;
+import com.yellowdot.yellowdotapi.enums.MessagesCode;
 import com.yellowdot.yellowdotapi.enums.UserStatus;
+import com.yellowdot.yellowdotapi.exceptions.LoginException;
 import com.yellowdot.yellowdotapi.repositories.RoleRepository;
 import com.yellowdot.yellowdotapi.repositories.UserRepository;
 import com.yellowdot.yellowdotapi.services.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,13 +30,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(CreateUserDto userDto) {
+    public void createUser(CreateUserDto userDto) throws LoginException {
 
         var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
-        var userFromBD = userRepository.findUserByUsername(userDto.username());
+        var userFromBD = userRepository.findUserByUsernameOrEmail(userDto.username(), userDto.email());
 
         if(userFromBD.isPresent()){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new LoginException(MessagesCode.LG001.getCode(), MessagesCode.LG001.getMessage());
         }
 
         var user = new User();
@@ -50,5 +51,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public void updateUsername(String userName, UUID uuid) {
+
     }
 }

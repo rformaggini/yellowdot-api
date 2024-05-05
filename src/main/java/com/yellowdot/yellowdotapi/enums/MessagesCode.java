@@ -1,14 +1,15 @@
 package com.yellowdot.yellowdotapi.enums;
 
-public enum ErrorCode {
+public enum MessagesCode {
 
-    LG001("Username or email not already in use.", "LG-001"),
-    LG002("Username, email or login invalid.", "LG-002"),
+    LG001("Username or email already in use.", "LG-001"),
+    LG002("User created successfully.", "LG-002"),
+    LG003("User data or password invalid.", "LG-003")
     ;
     private String message;
     private String code;
 
-    ErrorCode(String message, String code) {
+    MessagesCode(String message, String code) {
         this.message = message;
         this.code = code;
     }

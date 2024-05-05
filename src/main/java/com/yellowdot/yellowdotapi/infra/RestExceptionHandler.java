@@ -1,6 +1,7 @@
 package com.yellowdot.yellowdotapi.infra;
 
-import com.yellowdot.yellowdotapi.enums.ErrorCode;
+import com.yellowdot.yellowdotapi.enums.MessagesCode;
+import com.yellowdot.yellowdotapi.exceptions.InvalidCredentialException;
 import com.yellowdot.yellowdotapi.exceptions.LoginException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +13,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(LoginException.class)
-    private ResponseEntity<ResponseErrorMessage> loginHandler(LoginException exception){
+    private ResponseEntity<ResponseMessage> loginHandler(LoginException exception){
         return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                .body(new ResponseErrorMessage(ErrorCode.LG001.getCode(), ErrorCode.LG001.getMessage()));
+                .body(new ResponseMessage(MessagesCode.LG001.getCode(), MessagesCode.LG001.getMessage(), true));
+    }
+
+    @ExceptionHandler(InvalidCredentialException.class)
+    private ResponseEntity<ResponseMessage> credentialHandler(InvalidCredentialException exception){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ResponseMessage(MessagesCode.LG003.getCode(), MessagesCode.LG003.getMessage(), true));
     }
 }

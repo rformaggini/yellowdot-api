@@ -3,6 +3,7 @@ package com.yellowdot.yellowdotapi.entities;
 import com.yellowdot.yellowdotapi.enums.UserStatus;
 import com.yellowdot.yellowdotapi.dtos.LoginRequest;
 import jakarta.persistence.*;
+import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
@@ -17,12 +18,13 @@ public class User {
     @Column(name = "user_id")
     private UUID userId;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(nullable = false)
     private String password;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Enumerated(EnumType.STRING)
