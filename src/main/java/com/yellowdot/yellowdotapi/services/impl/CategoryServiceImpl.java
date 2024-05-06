@@ -28,8 +28,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto addNewCategory(CategoryDto dto) {
-        var newCategory = categoryRepository.save(categoryMapper.categoryDtoToCategory(dto));
-        return categoryMapper.categoryToCategoryDto(newCategory);
+        var newCategory = categoryRepository.save(categoryMapper.dtoToEntity(dto));
+        return categoryMapper.entityToDto(newCategory);
     }
 
     @Override
@@ -39,13 +39,13 @@ public class CategoryServiceImpl implements CategoryService {
             throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
         }
         categoryToUpdate.get().setName(categoryDto.name());
-        return categoryMapper.categoryToCategoryDto(categoryRepository.save(categoryToUpdate.get()));
+        return categoryMapper.entityToDto(categoryRepository.save(categoryToUpdate.get()));
     }
 
     @Override
     public void deleteCategory(Integer categoryId) throws EntityNotFoundException {
-        var categoryToUpdate =  categoryRepository.findById(categoryId);
-        if(categoryToUpdate.isEmpty()){
+        var categoryToDelete =  categoryRepository.findById(categoryId);
+        if(categoryToDelete.isEmpty()){
             throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
         }
         categoryRepository.deleteById(categoryId);
