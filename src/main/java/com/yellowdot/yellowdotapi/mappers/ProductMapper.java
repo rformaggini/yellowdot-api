@@ -16,8 +16,8 @@ public interface ProductMapper {
     @Mapping(target = "category", ignore = true)
     Product dtoToEntityWithoutCategory(CreateProductDto dto);
 
-    @Mapping(target = "categoryDto", source = "category")
-    ProductDto entityToDto(Product product);
+    @Mapping(target = "category", source = "category")
+    ProductDto entityToDto(Product entity);
 
     List<Product> listDtoToListEntity(List<ProductDto> dtoList);
     List<ProductDto> listEntityToListDto(List<Product> list);

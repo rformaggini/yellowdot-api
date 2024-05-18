@@ -1,7 +1,7 @@
 package com.yellowdot.yellowdotapi.services.impl;
 
 import com.yellowdot.yellowdotapi.dtos.ProductDto;
-import com.yellowdot.yellowdotapi.entities.Category;
+import com.yellowdot.yellowdotapi.dtos.UpdateStatusProductDto;
 import com.yellowdot.yellowdotapi.enums.MessagesCode;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.mappers.CategoryMapper;
@@ -9,6 +9,7 @@ import com.yellowdot.yellowdotapi.mappers.ProductMapper;
 import com.yellowdot.yellowdotapi.repositories.CategoryRepository;
 import com.yellowdot.yellowdotapi.repositories.ProductRepository;
 import com.yellowdot.yellowdotapi.services.ProductService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto addNewProduct(ProductDto dto) throws EntityNotFoundException {
         try {
-            var category = categoryRepository.findById(dto.categoryDto().categoryId());
+            var category = categoryRepository.findById(dto.category().categoryId());
             var product = productMapper.dtoToEntity(dto);
             category.ifPresent(product::setCategory);
             return productMapper.entityToDto(productRepository.save(product));
@@ -51,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
             var productToUpdate =  productRepository.findById(dto.productId());
             if(productToUpdate.isPresent()){
                 productToUpdate.get().setName(dto.name());
-                productToUpdate.get().setCategory(categoryMapper.dtoToEntity(dto.categoryDto()));
+                productToUpdate.get().setCategory(categoryMapper.dtoToEntity(dto.category()));
                 productToUpdate.get().setDescription(dto.description());
                 productToUpdate.get().setPrice(dto.price());
                 return productMapper.entityToDto(productRepository.save(productToUpdate.get()));
@@ -70,5 +71,37 @@ public class ProductServiceImpl implements ProductService {
             throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
         }
         productRepository.deleteById(productId);
+    }
+
+    @Override
+    @Transactional
+    public ProductDto updateStatusProduct(UpdateStatusProductDto dto) throws EntityNotFoundException {
+        try {
+            var productToUpdate = productRepository.findById(dto.productId());
+            productToUpdate.ifPresent(value -> value.setStatus(dto.status()));
+            return productMapper.entityToDto(productRepository.save(productToUpdate.get()));
+        } catch (Exception exception){
+            throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
+        }
+    }
+
+    @Override
+    public List<ProductDto> getAllProductsByCategoryId(Integer categoryId) throws EntityNotFoundException {
+        try {
+            return productMapper.listEntityToListDto(productRepository.findByCategory(categoryRepository.findById(categoryId).get()));
+        } catch (Exception exception){
+            throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
+        }
+    }
+
+    @Override
+    public ProductDto getProductById(Integer categoryId) throws EntityNotFoundException {
+        try {
+            return productMapper.entityToDto( productRepository.findById(categoryId).get() );
+        } catch (Exception exception){
+            throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
+        }
+
+
     }
 }

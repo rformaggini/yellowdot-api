@@ -1,7 +1,7 @@
 package com.yellowdot.yellowdotapi.controllers;
 
-import com.yellowdot.yellowdotapi.dtos.CreateProductDto;
 import com.yellowdot.yellowdotapi.dtos.ProductDto;
+import com.yellowdot.yellowdotapi.dtos.UpdateStatusProductDto;
 import com.yellowdot.yellowdotapi.enums.MessagesCode;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.infra.ResponseMessage;
@@ -23,8 +23,19 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductDto>> getAllCategories(){
+    public ResponseEntity<List<ProductDto>> getAllProducts(){
         return ResponseEntity.ok(productService.getAllProducts());
+
+    }
+
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable("id") Integer categoryId) throws EntityNotFoundException {
+        return ResponseEntity.ok(productService.getProductById(categoryId));
+    }
+
+    @GetMapping("/getByCategory/{id}")
+    public ResponseEntity<List<ProductDto>> getAllProductsByCategoryId(@PathVariable("id") Integer categoryId) throws EntityNotFoundException {
+        return ResponseEntity.ok(productService.getAllProductsByCategoryId(categoryId));
     }
 
     @PostMapping
@@ -39,10 +50,18 @@ public class ProductController {
         return ResponseEntity.ok(productService.updateProduct(dto));
     }
 
+    @PutMapping("/updateStatus")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ProductDto> updateStatusProduct(@RequestBody UpdateStatusProductDto dto) throws EntityNotFoundException {
+        return ResponseEntity.ok(productService.updateStatusProduct(dto));
+    }
+
     @DeleteMapping("{id}")
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<ResponseMessage> deleteProductById(@PathVariable("id") Integer categoryId) throws EntityNotFoundException {
         productService.deleteProduct(categoryId);
         return ResponseEntity.ok(new ResponseMessage(MessagesCode.DB002.getCode(), MessagesCode.DB002.getMessage(), false));
     }
+
+
 }
