@@ -1,9 +1,8 @@
 package com.yellowdot.yellowdotapi.entities;
 
-import com.yellowdot.yellowdotapi.enums.UserStatus;
 import com.yellowdot.yellowdotapi.dtos.LoginRequest;
+import com.yellowdot.yellowdotapi.enums.UserStatus;
 import jakarta.persistence.*;
-import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;

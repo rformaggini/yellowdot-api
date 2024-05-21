@@ -3,11 +3,14 @@ package com.yellowdot.yellowdotapi.entities;
 import com.yellowdot.yellowdotapi.enums.PaymentMethod;
 import com.yellowdot.yellowdotapi.enums.PaymentStatus;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+
+//@NamedQuery(name = "Bill.findByUsername", query = "SELECT b FROM Bill b WHERE b.username=:username")
 
 @Entity
 @Table(name = "tb_bills")
@@ -48,6 +51,14 @@ public class Bill {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User createdBy;
+
+    /*@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "username")
+    private User username;*/
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_id")
+    private PubTable pubTable;
 
     @CreationTimestamp
     private Instant createdAt;
@@ -139,4 +150,14 @@ public class Bill {
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
+
+    public PubTable getPubTable() {
+        return pubTable;
+    }
+
+    public void setPubTable(PubTable pubTable) {
+        this.pubTable = pubTable;
+    }
+
+
 }

@@ -38,7 +38,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.updateCategory(dto));
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<ResponseMessage> deleteCategoryById(@PathVariable("id") Integer categoryId) throws EntityNotFoundException {
         categoryService.deleteCategory(categoryId);

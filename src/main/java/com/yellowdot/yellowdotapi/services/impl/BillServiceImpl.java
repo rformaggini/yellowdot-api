@@ -6,11 +6,14 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.yellowdot.yellowdotapi.dtos.BillDto;
 import com.yellowdot.yellowdotapi.dtos.ProductDto;
+import com.yellowdot.yellowdotapi.enums.MessagesCode;
 import com.yellowdot.yellowdotapi.enums.PaymentStatus;
 import com.yellowdot.yellowdotapi.enums.TypeFontPdf;
+import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.mappers.BillMapper;
 import com.yellowdot.yellowdotapi.repositories.BillRepository;
 import com.yellowdot.yellowdotapi.repositories.ProductRepository;
+import com.yellowdot.yellowdotapi.repositories.PubTableRepository;
 import com.yellowdot.yellowdotapi.services.BillService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -31,11 +34,13 @@ public class BillServiceImpl implements BillService {
     private final BillRepository billRepository;
     private final BillMapper billMapper;
     private final ProductRepository productRepository;
+    private final PubTableRepository tableRepository;
 
-    public BillServiceImpl(BillRepository billRepository, BillMapper billMapper, ProductRepository productRepository) {
+    public BillServiceImpl(BillRepository billRepository, BillMapper billMapper, ProductRepository productRepository, PubTableRepository tableRepository) {
         this.billRepository = billRepository;
         this.billMapper = billMapper;
         this.productRepository = productRepository;
+        this.tableRepository = tableRepository;
     }
 
     @Override
@@ -58,11 +63,52 @@ public class BillServiceImpl implements BillService {
         bill.setProducts((List) productsList);
         bill.setStatus(PaymentStatus.OPENED);
 
-
-
         var savedBill = billMapper.entityToDto(billRepository.save(bill));
         generatePdfFromBill(savedBill);
         return savedBill;
+    }
+
+    @Override
+    public List<BillDto> getBills() {
+        return billMapper.listEntityToListDto(billRepository.findAll());
+    }
+
+    @Override
+    public BillDto getBillByTableNumber(Integer number) throws EntityNotFoundException {
+        var tableFromDb = tableRepository.findByNumber(number);
+        if(tableFromDb.isEmpty()){
+            throw new EntityNotFoundException(MessagesCode.DB001.getMessage(),MessagesCode.DB001.getCode());
+        }
+        var billFromDB = billRepository.findByPubTable(tableFromDb.get());
+
+        return billMapper.entityToDto(billFromDB);
+    }
+
+    @Override
+    public BillDto getBillById(Integer id) throws EntityNotFoundException {
+
+        var billFromDB = billRepository.findById(id);
+        if(billFromDB.isEmpty()){
+            throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
+        }
+        return billMapper.entityToDto(billFromDB.get());
+    }
+
+    @Override
+    public List<BillDto> getBillByUsername(String username) throws EntityNotFoundException {
+
+        //var listOfBills = billRepository.findByUsername(username);
+        return List.of();
+    }
+
+    @Override
+    public byte[] getBillInPdf(Integer billId) {
+
+        var fileFromDb = "findFileByBillId";
+
+
+
+        return new byte[0];
     }
 
     private void generatePdfFromBill(BillDto dto) throws FileNotFoundException, DocumentException {
@@ -92,6 +138,7 @@ public class BillServiceImpl implements BillService {
                         .concat(emailData)
                         .concat(spaceLine)
                         .concat(paymentMethodData)
+                        .concat(spaceLine)
                         .concat(spaceLine),
                 getFontByType(TypeFontPdf.BODY));
         document.add(generalInformation);
