@@ -1,6 +1,7 @@
 package com.yellowdot.yellowdotapi.controllers;
 
 import com.yellowdot.yellowdotapi.dtos.CategoryDto;
+import com.yellowdot.yellowdotapi.dtos.CreateCategoryDto;
 import com.yellowdot.yellowdotapi.enums.MessagesCode;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.infra.ResponseMessage;
@@ -22,13 +23,14 @@ public class CategoryController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<List<CategoryDto>> getAllCategories(){
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
-    public ResponseEntity<CategoryDto> addNewCategory(@RequestBody CategoryDto dto){
+    public ResponseEntity<CategoryDto> addNewCategory(@RequestBody CreateCategoryDto dto){
         return ResponseEntity.ok(categoryService.addNewCategory(dto));
     }
 

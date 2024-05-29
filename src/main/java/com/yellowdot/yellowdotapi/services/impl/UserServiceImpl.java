@@ -33,7 +33,8 @@ public class UserServiceImpl implements UserService {
     public void createUser(CreateUserDto userDto) throws LoginException {
 
         var basicRole = roleRepository.findByName(Role.Values.BASIC.name());
-        var userFromBD = userRepository.findUserByUsernameOrEmail(userDto.username(), userDto.email());
+        var staffRole = roleRepository.findByName(Role.Values.STAFF.name());
+        var userFromBD = userRepository.findUserByUsernameOrEmail(userDto.email(), userDto.email());
 
         if(userFromBD.isPresent()){
             throw new LoginException(MessagesCode.LG001.getCode(), MessagesCode.LG001.getMessage());
@@ -41,10 +42,12 @@ public class UserServiceImpl implements UserService {
 
         var user = new User();
         user.setEmail(userDto.email());
-        user.setUsername(userDto.username());
+        user.setUsername(userDto.email());
+        user.setContactNumber(userDto.contactNumber());
+        user.setName(userDto.name());
         user.setPassword(passwordEncoder.encode(userDto.password()));
-        user.setRoles(Set.of(basicRole));
-        user.setStatus(UserStatus.ACTIVE);
+        user.setRoles(Set.of(basicRole,staffRole));
+        user.setStatus(UserStatus.ON_APPROVAL);
         userRepository.save(user);
     }
 

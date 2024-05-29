@@ -1,11 +1,14 @@
 package com.yellowdot.yellowdotapi.services.impl;
 
 import com.yellowdot.yellowdotapi.dtos.CategoryDto;
+import com.yellowdot.yellowdotapi.dtos.CreateCategoryDto;
 import com.yellowdot.yellowdotapi.enums.MessagesCode;
+import com.yellowdot.yellowdotapi.exceptions.DataIntegrityException;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.mappers.CategoryMapper;
 import com.yellowdot.yellowdotapi.repositories.CategoryRepository;
 import com.yellowdot.yellowdotapi.services.CategoryService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto addNewCategory(CategoryDto dto) {
+    public CategoryDto addNewCategory(CreateCategoryDto dto) {
         var newCategory = categoryRepository.save(categoryMapper.dtoToEntity(dto));
         return categoryMapper.entityToDto(newCategory);
     }
@@ -48,7 +51,11 @@ public class CategoryServiceImpl implements CategoryService {
         if(categoryToDelete.isEmpty()){
             throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
         }
+        try{
         categoryRepository.deleteById(categoryId);
+        } catch (DataIntegrityViolationException ex){
+            throw new DataIntegrityException(MessagesCode.DB003.getMessage(), MessagesCode.DB003.getCode());
+        }
     }
 
 

@@ -2,6 +2,7 @@ package com.yellowdot.yellowdotapi.config;
 
 import com.yellowdot.yellowdotapi.entities.Role;
 import com.yellowdot.yellowdotapi.entities.User;
+import com.yellowdot.yellowdotapi.enums.UserStatus;
 import com.yellowdot.yellowdotapi.repositories.RoleRepository;
 import com.yellowdot.yellowdotapi.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -30,18 +31,21 @@ public class AdminUserConfig implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
 
-        var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
-        var userAdmin = userRepository.findUserByUsername("admin");
+        var userAdmin = userRepository.findUserByUsername("admin@test.com");
 
         userAdmin.ifPresentOrElse(
                 (user) -> {
-                    System.out.println("User alredy exits -> Username: " + user.getUsername());
+                    System.out.println("SET USER ADMIN DONE. -> USERNAME: " + user.getUsername());
                 },
                 () -> {
+                    var roleAdmin = roleRepository.findByName(Role.Values.ADMIN.name());
                     var user = new User();
-                    user.setUsername("admin");
+                    user.setName("ADMIN");
+                    user.setContactNumber("");
+                    user.setUsername("admin@test.com");
+                    user.setStatus(UserStatus.ACTIVE);
                     user.setPassword(passwordEncoder.encode("admin"));
-                    user.setEmail("admin@gmail.com");
+                    user.setEmail("admin@test.com");
                     user.setRoles(Set.of(roleAdmin));
 
                     userRepository.save(user);

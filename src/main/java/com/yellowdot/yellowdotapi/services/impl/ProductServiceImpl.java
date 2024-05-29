@@ -1,8 +1,11 @@
 package com.yellowdot.yellowdotapi.services.impl;
 
+import com.yellowdot.yellowdotapi.dtos.CreateProductDto;
 import com.yellowdot.yellowdotapi.dtos.ProductDto;
+import com.yellowdot.yellowdotapi.dtos.UpdateProductDto;
 import com.yellowdot.yellowdotapi.dtos.UpdateStatusProductDto;
 import com.yellowdot.yellowdotapi.enums.MessagesCode;
+import com.yellowdot.yellowdotapi.enums.ProductStatus;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.mappers.CategoryMapper;
 import com.yellowdot.yellowdotapi.mappers.ProductMapper;
@@ -35,11 +38,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto addNewProduct(ProductDto dto) throws EntityNotFoundException {
+    public ProductDto addNewProduct(CreateProductDto dto) throws EntityNotFoundException {
         try {
-            var category = categoryRepository.findById(dto.category().categoryId());
+            var category = categoryRepository.findById(dto.categoryId());
             var product = productMapper.dtoToEntity(dto);
             category.ifPresent(product::setCategory);
+            product.setStatus(ProductStatus.ACTIVE);
             return productMapper.entityToDto(productRepository.save(product));
         } catch (NullPointerException exception){
             throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
@@ -47,12 +51,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(ProductDto dto) throws EntityNotFoundException {
+    public ProductDto updateProduct(UpdateProductDto dto) throws EntityNotFoundException {
         try {
-            var productToUpdate =  productRepository.findById(dto.productId());
+            var productToUpdate = productRepository.findById(dto.productId());
+            var category = categoryRepository.findById(dto.categoryId());
             if(productToUpdate.isPresent()){
                 productToUpdate.get().setName(dto.name());
-                productToUpdate.get().setCategory(categoryMapper.dtoToEntity(dto.category()));
+                category.ifPresent(value -> productToUpdate.get().setCategory(value));
                 productToUpdate.get().setDescription(dto.description());
                 productToUpdate.get().setPrice(dto.price());
                 return productMapper.entityToDto(productRepository.save(productToUpdate.get()));

@@ -20,6 +20,11 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(name = "contact_number")
+    private String contactNumber;
+
+    private String name;
+
     @Column(nullable = false)
     private String password;
 
@@ -87,5 +92,21 @@ public class User {
 
     public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

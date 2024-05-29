@@ -52,10 +52,6 @@ public class Bill {
     @JoinColumn(name = "user_id")
     private User createdBy;
 
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
-    private User username;*/
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_id")
     private PubTable pubTable;

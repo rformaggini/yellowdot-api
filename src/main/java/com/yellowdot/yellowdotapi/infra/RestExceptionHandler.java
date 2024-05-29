@@ -1,6 +1,7 @@
 package com.yellowdot.yellowdotapi.infra;
 
 import com.yellowdot.yellowdotapi.enums.MessagesCode;
+import com.yellowdot.yellowdotapi.exceptions.DataIntegrityException;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.exceptions.InvalidCredentialException;
 import com.yellowdot.yellowdotapi.exceptions.LoginException;
@@ -29,5 +30,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<ResponseMessage> dataBaseHandler(EntityNotFoundException exception){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ResponseMessage(MessagesCode.DB001.getCode(), MessagesCode.DB001.getMessage(), true));
+    }
+
+    @ExceptionHandler(DataIntegrityException.class)
+    private ResponseEntity<ResponseMessage> dataIntegrityHandler(DataIntegrityException exception){
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(new ResponseMessage(MessagesCode.DB003.getCode(), MessagesCode.DB003.getMessage(), true));
     }
 }

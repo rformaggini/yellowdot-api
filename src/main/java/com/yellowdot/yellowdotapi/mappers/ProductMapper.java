@@ -13,6 +13,8 @@ public interface ProductMapper {
 
     Product dtoToEntity(ProductDto dto);
 
+    Product dtoToEntity(CreateProductDto dto);
+
     @Mapping(target = "category", ignore = true)
     Product dtoToEntityWithoutCategory(CreateProductDto dto);
 

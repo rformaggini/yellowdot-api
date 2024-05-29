@@ -1,4 +1,7 @@
 package com.yellowdot.yellowdotapi.dtos;
 
-public record ProductDto(Integer productId, String name, CategoryDto category, String description, Double price) {
+import com.yellowdot.yellowdotapi.enums.ProductStatus;
+
+public record ProductDto(Integer productId, String name, CategoryDto category, String description, Double price,
+                         ProductStatus status) {
 }

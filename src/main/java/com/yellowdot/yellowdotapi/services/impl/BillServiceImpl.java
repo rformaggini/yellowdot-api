@@ -5,21 +5,28 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.yellowdot.yellowdotapi.dtos.BillDto;
-import com.yellowdot.yellowdotapi.dtos.ProductDto;
+import com.yellowdot.yellowdotapi.entities.Bill;
+import com.yellowdot.yellowdotapi.entities.File;
+import com.yellowdot.yellowdotapi.entities.Product;
 import com.yellowdot.yellowdotapi.enums.MessagesCode;
 import com.yellowdot.yellowdotapi.enums.PaymentStatus;
 import com.yellowdot.yellowdotapi.enums.TypeFontPdf;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.mappers.BillMapper;
 import com.yellowdot.yellowdotapi.repositories.BillRepository;
+import com.yellowdot.yellowdotapi.repositories.FileRepository;
 import com.yellowdot.yellowdotapi.repositories.ProductRepository;
 import com.yellowdot.yellowdotapi.repositories.PubTableRepository;
 import com.yellowdot.yellowdotapi.services.BillService;
 import jakarta.transaction.Transactional;
+import org.apache.pdfbox.io.IOUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -35,17 +42,14 @@ public class BillServiceImpl implements BillService {
     private final BillMapper billMapper;
     private final ProductRepository productRepository;
     private final PubTableRepository tableRepository;
+    private final FileRepository fileRepository;
 
-    public BillServiceImpl(BillRepository billRepository, BillMapper billMapper, ProductRepository productRepository, PubTableRepository tableRepository) {
+    public BillServiceImpl(BillRepository billRepository, BillMapper billMapper, ProductRepository productRepository, PubTableRepository tableRepository, FileRepository fileRepository) {
         this.billRepository = billRepository;
         this.billMapper = billMapper;
         this.productRepository = productRepository;
         this.tableRepository = tableRepository;
-    }
-
-    @Override
-    public String generateReport() {
-        return "";
+        this.fileRepository = fileRepository;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class BillServiceImpl implements BillService {
         bill.setStatus(PaymentStatus.OPENED);
 
         var savedBill = billMapper.entityToDto(billRepository.save(bill));
-        generatePdfFromBill(savedBill);
+        //generatePdfFromBill(savedBill);
         return savedBill;
     }
 
@@ -94,31 +98,37 @@ public class BillServiceImpl implements BillService {
         return billMapper.entityToDto(billFromDB.get());
     }
 
-    @Override
-    public List<BillDto> getBillByUsername(String username) throws EntityNotFoundException {
-
-        //var listOfBills = billRepository.findByUsername(username);
-        return List.of();
-    }
 
     @Override
-    public byte[] getBillInPdf(Integer billId) {
+    public byte[] getBillInPdf(Integer billId) throws EntityNotFoundException, IOException {
 
-        var fileFromDb = "findFileByBillId";
+        var fileFromDb = fileRepository.findByBillId(billId);
+        if(fileFromDb.isEmpty()){
+            throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
+        }
+        //var bill = billRepository.findById()
+        //generatePdfFromBill();
+        //var filePath = "C:\\Users\\forgg\\Downloads\\".concat( fileFromDb.get().getFileName() ).concat(".pdf");
+        var filePath = "C:\\Users\\forgg\\Downloads\\Bill-18-05-2024-11-56-39.pdf";
 
-
-
-        return new byte[0];
+        var file = new java.io.File(filePath);
+        if(!file.exists()){
+            throw new EntityNotFoundException(MessagesCode.IO001.getMessage(),MessagesCode.IO001.getCode());
+        }
+        var fileStream = new FileInputStream(file);
+        var bytesArray = IOUtils.toByteArray(fileStream);
+        fileStream.close();
+        return bytesArray;
     }
 
-    private void generatePdfFromBill(BillDto dto) throws FileNotFoundException, DocumentException {
+    private void generatePdfFromBill(Bill bill) throws FileNotFoundException, DocumentException {
         var fileName = generateFileName();
         var headerData = "PUB ONLINE - BILL";
-        var nameData = "Name: " + dto.name() ;
-        var contactNumberData = "Contact Number: " + dto.contactNumber() ;
-        var emailData = "Email: " + dto.email() ;
-        var paymentMethodData = "Payment Method: " + dto.paymentMethod().toString();
-        var total = "Total: " + dto.total();
+        var nameData = "Name: " + bill.getName() ;
+        var contactNumberData = "Contact Number: " + bill.getContactNumber() ;
+        var emailData = "Email: " + bill.getEmail() ;
+        var paymentMethodData = "Payment Method: " + bill.getPaymentMethod().toString();
+        var total = "Total: " + bill.getTotal();
         var spaceLine = "\n";
 
         var document = new Document();
@@ -146,12 +156,18 @@ public class BillServiceImpl implements BillService {
         PdfPTable table = new PdfPTable(5);
         table.setWidthPercentage(100);
         createHeaderOnTable(table);
-        addRowsOnTableFromProductsList(table, dto.products());
+        addRowsOnTableFromProductsList(table, bill.getProducts());
         document.add(table);
 
         var footer = new Paragraph(total.concat(spaceLine), getFontByType(TypeFontPdf.FOOTER));
         document.add(footer);
         document.close();
+
+        var newFile = new File();
+        newFile.setBill(bill);
+        newFile.setFileName(fileName);
+
+        fileRepository.save(newFile);
     }
 
     private String generateFileName(){
@@ -204,15 +220,15 @@ public class BillServiceImpl implements BillService {
                 });
     }
 
-    private void addRowsOnTableFromProductsList(PdfPTable table, List<ProductDto> products){
+    private void addRowsOnTableFromProductsList(PdfPTable table, List<Product> products){
         products.forEach(product -> {
             var cell = new PdfPCell();
             cell.setBackgroundColor(BaseColor.LIGHT_GRAY);
             cell.setBorderWidth(2);
-            table.addCell(product.name());
-            table.addCell(product.category().name());
+            table.addCell(product.getName());
+            table.addCell(product.getCategory().getName());
             table.addCell(" Quantity ");
-            table.addCell(product.price().toString());
+            table.addCell(product.getName());
             table.addCell(" total ");
         });
     }

@@ -5,11 +5,13 @@ import com.yellowdot.yellowdotapi.dtos.BillDto;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.services.BillService;
 import jakarta.websocket.server.PathParam;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -23,7 +25,7 @@ public class BillController {
     }
 
     @PostMapping("/open")
-    @PreAuthorize("hasAnyAuthority('SCOPE_BASIC','SCOPE_ADMIN', 'SCOPE_STAFF', 'SCOPE_COSTUMER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_BASIC','SCOPE_ADMIN', 'SCOPE_STAFF')")
     public ResponseEntity<BillDto> createBill(@RequestBody BillDto dto) throws DocumentException, FileNotFoundException {
         return ResponseEntity.ok(billService.createBill(dto));
     }
@@ -41,20 +43,14 @@ public class BillController {
     }
 
     @GetMapping("/getBillByTableNumber/{number}")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF', 'SCOPE_COSTUMER')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
     public ResponseEntity<BillDto> getBillByTableNumber(@PathVariable("number") Integer number) throws EntityNotFoundException {
         return ResponseEntity.ok(billService.getBillByTableNumber(number));
     }
 
-    /*@GetMapping("/getBillByUsername/{username}")
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF', 'SCOPE_COSTUMER')")
-    public ResponseEntity<List<BillDto>> getBillByUsername(@PathVariable("username") String username) throws EntityNotFoundException {
-        return ResponseEntity.ok(billService.getBillByUsername(username));
-    }*/
-
-    @GetMapping("/getBillInPdf")
-    public ResponseEntity<byte[]> getBillInPdf(){
-        return ResponseEntity.ok().build();
+    @GetMapping("/getBillInPdf/{id}")
+    public ResponseEntity<byte[]> getBillInPdf(@PathVariable("id") Integer billId) throws EntityNotFoundException, IOException {
+        return ResponseEntity.ok(billService.getBillInPdf(billId));
     }
 
 
