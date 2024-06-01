@@ -1,5 +1,6 @@
 package com.yellowdot.yellowdotapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.yellowdot.yellowdotapi.enums.ProductStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +12,7 @@ import java.time.Instant;
 public class Product {
 
     @Id
+    @JsonBackReference
     @Column(name = "product_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer productId;
@@ -86,4 +88,6 @@ public class Product {
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
+
+
 }

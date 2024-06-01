@@ -21,6 +21,7 @@ import com.yellowdot.yellowdotapi.services.BillService;
 import jakarta.transaction.Transactional;
 import org.apache.pdfbox.io.IOUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,14 +58,7 @@ public class BillServiceImpl implements BillService {
     public BillDto createBill(BillDto dto) throws DocumentException, FileNotFoundException {
 
         var bill = billMapper.dtoToEntity(dto);
-        var productsList = new ArrayList<>();
-        dto.products().stream().forEach(product -> {
-            var productFromDb = productRepository.findById(product.productId());
-            if(productFromDb.isPresent()) {
-                productsList.add(productFromDb.get());
-            }
-        });
-        bill.setProducts((List) productsList);
+
         bill.setStatus(PaymentStatus.OPENED);
 
         var savedBill = billMapper.entityToDto(billRepository.save(bill));
@@ -132,6 +126,14 @@ public class BillServiceImpl implements BillService {
         var spaceLine = "\n";
 
         var document = new Document();
+
+        try {
+            var filename = ResourceUtils.getURL("classpath:").getPath();
+            System.out.println(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\forgg\\Downloads\\".concat(fileName).concat(".pdf")));
 
         document.open();
@@ -156,7 +158,7 @@ public class BillServiceImpl implements BillService {
         PdfPTable table = new PdfPTable(5);
         table.setWidthPercentage(100);
         createHeaderOnTable(table);
-        addRowsOnTableFromProductsList(table, bill.getProducts());
+        //addRowsOnTableFromProductsList(table, bill.getProducts());
         document.add(table);
 
         var footer = new Paragraph(total.concat(spaceLine), getFontByType(TypeFontPdf.FOOTER));

@@ -3,12 +3,9 @@ package com.yellowdot.yellowdotapi.entities;
 import com.yellowdot.yellowdotapi.enums.PaymentMethod;
 import com.yellowdot.yellowdotapi.enums.PaymentStatus;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
 
 //@NamedQuery(name = "Bill.findByUsername", query = "SELECT b FROM Bill b WHERE b.username=:username")
 
@@ -20,8 +17,6 @@ public class Bill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bill_id")
     private Integer id;
-
-    private UUID uuid;
 
     private String name;
 
@@ -37,14 +32,6 @@ public class Bill {
     @Column
     private Double total;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "tb_bill_products",
-            joinColumns = @JoinColumn(name = "bill_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products;
-
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
@@ -56,6 +43,10 @@ public class Bill {
     @JoinColumn(name = "table_id")
     private PubTable pubTable;
 
+    @OneToOne(fetch = FetchType.LAZY )
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     @CreationTimestamp
     private Instant createdAt;
 
@@ -65,14 +56,6 @@ public class Bill {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
     }
 
     public String getName() {
@@ -115,14 +98,6 @@ public class Bill {
         this.total = total;
     }
 
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
     public PaymentStatus getStatus() {
         return status;
     }
@@ -155,5 +130,11 @@ public class Bill {
         this.pubTable = pubTable;
     }
 
+    public Order getOrder() {
+        return order;
+    }
 
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 }

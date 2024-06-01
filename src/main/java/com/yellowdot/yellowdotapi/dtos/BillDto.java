@@ -4,5 +4,5 @@ import com.yellowdot.yellowdotapi.enums.PaymentMethod;
 
 import java.util.List;
 
-public record BillDto(String name, String contactNumber, String email, PaymentMethod paymentMethod, List<ProductDto> products, Double total) {
+public record BillDto(String name, String contactNumber, String email, PaymentMethod paymentMethod, Double total) {
 }
