@@ -10,6 +10,7 @@ import com.yellowdot.yellowdotapi.repositories.OrderItemRepository;
 import com.yellowdot.yellowdotapi.repositories.OrderRepository;
 import com.yellowdot.yellowdotapi.repositories.ProductRepository;
 import com.yellowdot.yellowdotapi.services.OrderService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,6 +69,7 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    @Transactional
     @Override
     public void deleteProductsFromOrder(Integer orderId, Integer productId) throws EntityNotFoundException {
         var orderFromDb = orderRepository.findById(orderId);
@@ -80,9 +82,10 @@ public class OrderServiceImpl implements OrderService {
                     }
                 }
         ));
-        if(orderItemToDelete.get() != null){
-            var orderItem = orderItemRepository.findById(orderItemToDelete.get().getId());
-            orderItemRepository.delete(orderItem.get());
+        if(orderFromDb.isPresent()){
+            orderItemRepository.deleteOrderItemByOrderIdAndProductId(
+                    orderItemToDelete.get().getOrder().getId(),
+                    orderItemToDelete.get().getProduct().getProductId());
         }
     }
 

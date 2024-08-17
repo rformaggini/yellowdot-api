@@ -38,6 +38,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDto> getAllProductsActive() {
+        return productMapper.listEntityToListDto(productRepository.findAllByStatusEquals(ProductStatus.ACTIVE));
+    }
+
+    @Override
     public ProductDto addNewProduct(CreateProductDto dto) throws EntityNotFoundException {
         try {
             var category = categoryRepository.findById(dto.categoryId());

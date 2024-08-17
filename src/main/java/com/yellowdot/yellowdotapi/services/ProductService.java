@@ -11,6 +11,7 @@ import java.util.List;
 public interface ProductService {
 
     List<ProductDto> getAllProducts();
+    List<ProductDto> getAllProductsActive();
     ProductDto addNewProduct(CreateProductDto dto) throws EntityNotFoundException;
     ProductDto updateProduct(UpdateProductDto dto) throws EntityNotFoundException;
     void deleteProduct(Integer productId) throws EntityNotFoundException;

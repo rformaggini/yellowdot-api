@@ -24,7 +24,7 @@ public class BillController {
 
     @PostMapping("/open")
     @PreAuthorize("hasAnyAuthority('SCOPE_BASIC','SCOPE_ADMIN', 'SCOPE_STAFF')")
-    public ResponseEntity<BillDto> createBill(@RequestBody BillDto dto) throws DocumentException, FileNotFoundException {
+    public ResponseEntity<BillDto> createBill(@RequestBody(required = false) BillDto dto) throws DocumentException, FileNotFoundException {
         return ResponseEntity.ok(billService.createBill(dto));
     }
 
