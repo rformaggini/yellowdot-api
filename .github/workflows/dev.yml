@@ -1,0 +1,21 @@
+name: Deploy on DEVELOP environment
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install and configuring java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "zulu"
+          java-version: "21"
+
+      - name: Build project
+        run: mvn clean install && ls
