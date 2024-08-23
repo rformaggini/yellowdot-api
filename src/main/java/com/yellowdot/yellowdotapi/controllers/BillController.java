@@ -1,6 +1,7 @@
 package com.yellowdot.yellowdotapi.controllers;
 
 import com.itextpdf.text.DocumentException;
+import com.yellowdot.yellowdotapi.dtos.BillCreateDto;
 import com.yellowdot.yellowdotapi.dtos.BillDto;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.services.BillService;
@@ -24,14 +25,20 @@ public class BillController {
 
     @PostMapping("/open")
     @PreAuthorize("hasAnyAuthority('SCOPE_BASIC','SCOPE_ADMIN', 'SCOPE_STAFF')")
-    public ResponseEntity<BillDto> createBill(@RequestBody(required = false) BillDto dto) throws DocumentException, FileNotFoundException {
+    public ResponseEntity<BillDto> createBill(@RequestBody(required = false) BillCreateDto dto) throws DocumentException, FileNotFoundException {
         return ResponseEntity.ok(billService.createBill(dto));
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN','SCOPE_STAFF')")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN')")
     public ResponseEntity<List<BillDto>> getBills(){
         return ResponseEntity.ok(billService.getBills());
+    }
+
+    @GetMapping("/getBillOpened")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN','SCOPE_STAFF')")
+    public ResponseEntity<List<BillDto>> getBillsOpened(){
+        return ResponseEntity.ok(billService.getAllBillsOpened());
     }
 
     @GetMapping("/{id}")
@@ -45,12 +52,5 @@ public class BillController {
     public ResponseEntity<BillDto> getBillByTableNumber(@PathVariable("number") Integer number) throws EntityNotFoundException {
         return ResponseEntity.ok(billService.getBillByTableNumber(number));
     }
-
-    @GetMapping("/getBillInPdf/{id}")
-    public ResponseEntity<byte[]> getBillInPdf(@PathVariable("id") Integer billId) throws EntityNotFoundException, IOException {
-        return ResponseEntity.ok(billService.getBillInPdf(billId));
-    }
-
-
 
 }
