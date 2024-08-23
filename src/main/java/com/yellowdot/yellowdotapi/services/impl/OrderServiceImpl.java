@@ -4,6 +4,7 @@ import com.yellowdot.yellowdotapi.dtos.OrderDto;
 import com.yellowdot.yellowdotapi.dtos.OrderItemWrapperDto;
 import com.yellowdot.yellowdotapi.entities.Order;
 import com.yellowdot.yellowdotapi.entities.OrderItem;
+import com.yellowdot.yellowdotapi.enums.OrderStatus;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.mappers.OrderMapper;
 import com.yellowdot.yellowdotapi.repositories.OrderItemRepository;
@@ -34,18 +35,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getAllOrders() {
-        return orderMapper.listEntityToListDto(orderRepository.findAll());
+        return orderMapper.listEntityToListDto(orderRepository.findAllByStatus(OrderStatus.ACTIVE));
     }
 
     @Override
     public OrderDto createOrder() throws EntityNotFoundException {
-        var orderSaved = orderRepository.save(new Order());
-        return orderMapper.entityToDto(orderSaved);
+        var newOrder = new Order();
+        newOrder.setStatus(OrderStatus.ACTIVE);
+        return orderMapper.entityToDto(orderRepository.save(newOrder));
     }
 
     @Override
     public void addProductToOrder(OrderItemWrapperDto orderItemDto) throws EntityNotFoundException {
-
 
         var order = orderRepository.findById(orderItemDto.orderId());
         var product = productRepository.findById(orderItemDto.productId());

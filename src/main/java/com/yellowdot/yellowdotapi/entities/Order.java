@@ -1,6 +1,7 @@
 package com.yellowdot.yellowdotapi.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.yellowdot.yellowdotapi.enums.OrderStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -22,6 +23,9 @@ public class Order {
     @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "order")
     private List<OrderItem> orderItems;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @Transient
     public Double getTotalOrderPrice() {
@@ -62,5 +66,12 @@ public class Order {
         this.orderItems = orderItems;
     }
 
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
 }
 
