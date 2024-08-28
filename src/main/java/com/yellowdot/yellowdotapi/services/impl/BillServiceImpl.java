@@ -1,9 +1,10 @@
 package com.yellowdot.yellowdotapi.services.impl;
 
-import com.itextpdf.text.DocumentException;
 import com.yellowdot.yellowdotapi.dtos.BillCreateDto;
 import com.yellowdot.yellowdotapi.dtos.BillDto;
+import com.yellowdot.yellowdotapi.dtos.PaymentDto;
 import com.yellowdot.yellowdotapi.enums.MessagesCode;
+import com.yellowdot.yellowdotapi.enums.OrderStatus;
 import com.yellowdot.yellowdotapi.enums.PaymentStatus;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 import com.yellowdot.yellowdotapi.mappers.BillMapper;
@@ -11,7 +12,6 @@ import com.yellowdot.yellowdotapi.repositories.*;
 import com.yellowdot.yellowdotapi.services.BillService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     @Transactional
-    public BillDto createBill(BillCreateDto dto) throws DocumentException, FileNotFoundException {
+    public BillDto createBill(BillCreateDto dto) throws FileNotFoundException {
 
         var orderCreated = orderRepository.findById(dto.orderId());
         var bill = billMapper.dtoToEntity(dto);
@@ -55,6 +55,31 @@ public class BillServiceImpl implements BillService {
     @Override
     public List<BillDto> getAllBillsOpened() {
         return billMapper.listEntityToListDto(billRepository.findAllByStatusEquals(PaymentStatus.OPENED));
+    }
+
+    @Override
+    @Transactional
+    public void toPay(PaymentDto dto) {
+        var bill = billRepository.findById(dto.billId());
+        bill.ifPresent(value -> {
+            value.setPaymentMethod(dto.method());
+            value.setStatus(PaymentStatus.PAID);
+            value.getOrder().setStatus(OrderStatus.CLOSED);
+            billRepository.save(value);
+            orderRepository.save(value.getOrder());
+        });
+    }
+
+    @Override
+    @Transactional
+    public void toCancelBill(Integer billId) {
+        var bill = billRepository.findById(billId);
+        bill.ifPresent(value -> {
+            value.setStatus(PaymentStatus.CLOSED);
+            value.getOrder().setStatus(OrderStatus.CLOSED);
+            billRepository.save(value);
+            orderRepository.save(value.getOrder());
+        });
     }
 
     @Override
