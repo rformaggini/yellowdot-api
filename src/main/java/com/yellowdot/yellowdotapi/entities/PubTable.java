@@ -1,5 +1,6 @@
 package com.yellowdot.yellowdotapi.entities;
 
+import com.yellowdot.yellowdotapi.enums.PubTableStatus;
 import jakarta.persistence.*;
 
 
@@ -10,19 +11,21 @@ public class PubTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "table_id")
-    private Integer Id;
+    private Integer id;
 
-    @Column(name = "number", unique = true)
     private Integer number;
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    private PubTableStatus status;
+
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Integer id) {
-        Id = id;
+        this.id = id;
     }
 
     public Integer getNumber() {
@@ -39,5 +42,13 @@ public class PubTable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public PubTableStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PubTableStatus status) {
+        this.status = status;
     }
 }

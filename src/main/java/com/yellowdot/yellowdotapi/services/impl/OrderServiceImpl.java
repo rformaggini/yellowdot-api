@@ -10,6 +10,7 @@ import com.yellowdot.yellowdotapi.mappers.OrderMapper;
 import com.yellowdot.yellowdotapi.repositories.OrderItemRepository;
 import com.yellowdot.yellowdotapi.repositories.OrderRepository;
 import com.yellowdot.yellowdotapi.repositories.ProductRepository;
+import com.yellowdot.yellowdotapi.services.BillService;
 import com.yellowdot.yellowdotapi.services.OrderService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -25,12 +26,14 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderMapper orderMapper;
+    private final BillService billService;
 
-    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository, OrderItemRepository orderItemRepository, OrderMapper orderMapper) {
+    public OrderServiceImpl(OrderRepository orderRepository, ProductRepository productRepository, OrderItemRepository orderItemRepository, OrderMapper orderMapper, BillService billService) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.orderItemRepository = orderItemRepository;
         this.orderMapper = orderMapper;
+        this.billService = billService;
     }
 
     @Override
@@ -93,7 +96,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(Integer orderId) throws Exception {
         try {
-        orderRepository.deleteById(orderId);
+            var order = orderRepository.findById(orderId);
+            order.ifPresent(value -> {
+                var bill = billService.findBillbyOrder(value);
+                if(bill != null){
+                    billService.toCancelBill(bill.getId());
+                } else {
+                    orderRepository.deleteById(orderId);
+                }
+            });
         } catch (Exception ex){
             throw new Exception("Something went wrong while trying to delete order");
         }

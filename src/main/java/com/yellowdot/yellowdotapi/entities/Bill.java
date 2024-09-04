@@ -29,9 +29,6 @@ public class Bill {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    @Column
-    private Double total;
-
     @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
@@ -88,14 +85,6 @@ public class Bill {
 
     public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
-    }
-
-    public Double getTotal() {
-        return total;
-    }
-
-    public void setTotal(Double total) {
-        this.total = total;
     }
 
     public PaymentStatus getStatus() {

@@ -3,6 +3,8 @@ package com.yellowdot.yellowdotapi.services.impl;
 import com.yellowdot.yellowdotapi.dtos.BillCreateDto;
 import com.yellowdot.yellowdotapi.dtos.BillDto;
 import com.yellowdot.yellowdotapi.dtos.PaymentDto;
+import com.yellowdot.yellowdotapi.entities.Bill;
+import com.yellowdot.yellowdotapi.entities.Order;
 import com.yellowdot.yellowdotapi.enums.MessagesCode;
 import com.yellowdot.yellowdotapi.enums.OrderStatus;
 import com.yellowdot.yellowdotapi.enums.PaymentStatus;
@@ -101,6 +103,11 @@ public class BillServiceImpl implements BillService {
             throw new EntityNotFoundException(MessagesCode.DB001.getMessage(), MessagesCode.DB001.getCode());
         }
         return billMapper.entityToDto(billFromDB.get());
+    }
+
+    @Override
+    public Bill findBillbyOrder(Order order){
+        return billRepository.findByOrder(order);
     }
 }
 

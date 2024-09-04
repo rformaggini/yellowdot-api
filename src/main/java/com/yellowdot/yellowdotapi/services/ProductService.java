@@ -1,9 +1,6 @@
 package com.yellowdot.yellowdotapi.services;
 
-import com.yellowdot.yellowdotapi.dtos.CreateProductDto;
-import com.yellowdot.yellowdotapi.dtos.ProductDto;
-import com.yellowdot.yellowdotapi.dtos.UpdateProductDto;
-import com.yellowdot.yellowdotapi.dtos.UpdateStatusProductDto;
+import com.yellowdot.yellowdotapi.dtos.*;
 import com.yellowdot.yellowdotapi.exceptions.EntityNotFoundException;
 
 import java.util.List;
