@@ -20,12 +20,14 @@ jobs:
       - name: Build project
         run: mvn clean install -DskipTests && ls
 
-      - name: Send jar to EC2
-        uses: appleboy/scp-action@master
-        with:
-          host: ec2-18-217-111-203.us-east-2.compute.amazonaws.com
-          username: ec2-user
-          key: ${{ secrets.KEY_PUB_ONLINE_API }}
-          port: 22
-          source: "./target/pubonline-api-0.0.1-SNAPSHOT.jar"
-          target: "/home/ec2-user"
+      - name: Login Docker Hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build Docker Image
+        run: docker build -t rformaggini/pubonline-api .
+
+      - name: Push Image Docker
+        run: docker push rformaggini/pubonline-api
+
+
+
