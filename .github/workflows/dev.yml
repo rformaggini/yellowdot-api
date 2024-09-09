@@ -18,7 +18,9 @@ jobs:
           java-version: "21"
 
       - name: Build project
-        run: mvn clean install -DskipTests && mkdir artifacts && cp target/*.jar artifacts cd artifacts && ls
+        run: mvn clean install -DskipTests
+             mkdir artifacts && cp target/*.jar artifacts
+             cd artifacts && ls
 
       - name: Save artifact
         uses: actions/upload-artifact@v2
