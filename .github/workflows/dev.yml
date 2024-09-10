@@ -23,6 +23,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./docker
+          push: true
+          tags: rformaggini/pubonline-api:latest
+
       - name: Build Image
         run: mvn spring-boot:build-image -DskipTests
 
