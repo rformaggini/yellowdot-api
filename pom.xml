@@ -73,9 +73,6 @@
 							<BP_JVM_VERSION>${java.version}</BP_JVM_VERSION>
 						</env>
 					</image>
-					<docker>
-						<host>//./pipe/dockerDesktopLinuxEngine</host>
-					</docker>
 				</configuration>
 			</plugin>
 			<plugin>
