@@ -56,10 +56,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Pull image from docker hub
-        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api:latest
+        run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api:latest
 
       - name: Run docker container
-        run: docker run -d -p 80:8080 --name pubonline-api ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api
+        run: sudo docker run -d -p 80:8080 --name pubonline-api ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api
 
 
 
