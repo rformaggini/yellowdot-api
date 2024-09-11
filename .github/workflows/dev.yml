@@ -43,8 +43,16 @@ jobs:
         with:
           context: ./
           push: true
-          tags: rformaggini/pubonline-api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api:latest
 
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api:latest
+      - name: Run docker container
+        run: docker run -d -p 80:8080 --name pubonline-api ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api
 
 
 
