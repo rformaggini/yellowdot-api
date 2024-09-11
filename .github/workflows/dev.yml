@@ -55,11 +55,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Pull image from docker hub
+      - name: Pull image Postgres
+        run: sudo docker pull postgres
+
+      - name: Pull image API from docker hub
         run: sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api:latest
 
+      - name: Create a network docker
+        run: sudo docker network create pg-db-network
+
+      - name: Run docker Postgres
+        run: sudo docker run -p 15432:5432 --network pg-db-network --name postgres-db postgres
+
       - name: Run docker container
-        run: sudo docker run -d -p 80:8080 --name pubonline-api ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api
+        run: sudo docker run -d -p 80:8080 --network pg-db-network --name pubonline-api ${{ secrets.DOCKERHUB_USERNAME }}/pubonline-api
 
 
 
