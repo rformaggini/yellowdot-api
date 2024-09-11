@@ -64,11 +64,11 @@ jobs:
       - name: Remove docker container Postgres
         run: sudo docker rm -f postgres-db
 
-      - name: Remove docker container pubonline-api
-        run: sudo docker rm -f pubonline-api
+      #- name: Remove docker container pubonline-api
+      #  run: sudo docker rm -f pubonline-api
 
-      - name: Delete network
-        run: sudo docker network prune
+      #- name: Delete network
+      #  run: sudo docker network prune
 
       - name: Create a network docker
         run: sudo docker network create -d bridge pg-db-network
