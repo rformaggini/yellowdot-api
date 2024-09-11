@@ -64,14 +64,14 @@ jobs:
       - name: Remove docker container Postgres
         run: sudo docker rm -f postgres-db
 
-      #- name: Remove docker container pubonline-api
-      #  run: sudo docker rm -f pubonline-api
+      - name: Remove docker container pubonline-api
+        run: sudo docker rm -f pubonline-api
 
       #- name: Delete network
       #  run: sudo docker network prune
 
-      - name: Create a network docker
-        run: sudo docker network create -d bridge pg-db-network
+      #- name: Create a network docker
+      #  run: sudo docker network create -d bridge pg-db-network
 
       - name: Run docker Postgres
         run: sudo docker run -p 15432:5432 --network pg-db-network --name postgres-db -e POSTGRES_PASSWORD=1234 postgres
