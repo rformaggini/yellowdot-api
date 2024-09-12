@@ -1,11 +1,38 @@
 services:
-  postgres:
+  postgres-db:
+    container_name: postgres-db
     image: postgres
     ports:
-      - 5432:5432
+      - 15432:5432
     volumes:
       - ~/apps/postgres:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=1234
       - POSTGRES_USER=admin
-      - POSTGRES_DB=yddb
+      - POSTGRES_DB=pubonline
+    networks:
+      - pg-db-network
+    restart: always
+
+  pubonline-api:
+    container_name: pubonline-api
+    image: rformaggini/pubonline-api-0.0.1:latest
+    environment:
+      SERVER_PORT: 8080
+    ports:
+      - 80:8080
+    depends_on:
+      - postgres-db
+    networks:
+      - pg-db-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 700M
+        reservations:
+          memory: 700M
+
+networks:
+  pg-db-network:
+    driver: bridge
