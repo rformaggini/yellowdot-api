@@ -16,7 +16,7 @@ services:
 
   pubonline-api:
     container_name: pubonline-api
-    image: rformaggini/pubonline-api-0.0.1:latest
+    image: rformaggini/pubonline-api:latest
     environment:
       SERVER_PORT: 8080
     ports:
