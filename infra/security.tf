@@ -24,7 +24,7 @@ resource "aws_security_group_rule" "sg-rules-ssh-in" {
 
 resource "aws_security_group_rule" "sg-rules-http-in" {
   from_port         = 0
-  protocol          = "tcp"
+  protocol          = "-1"
   security_group_id = "${aws_security_group.pubonline-api-sg.id}"
   to_port           = 0
   type              = "ingress"

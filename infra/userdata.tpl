@@ -30,8 +30,8 @@
     cd yellowdot-api
     git checkout master
     git pull
-    cd deploy/docker
+    cd docker
 
 #run your docker compose file
 
-    docker-compose -f docker-compose.yml up -d --force-recreate --remove-orphans
+    docker-compose -f docker-compose.yaml up -d --force-recreate --remove-orphans

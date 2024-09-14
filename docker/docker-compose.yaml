@@ -29,9 +29,22 @@ services:
     deploy:
       resources:
         limits:
-          memory: 700M
+          memory: 500M
         reservations:
-          memory: 700M
+          memory: 500M
+
+  pubonline-app:
+    container_name: pubonline-app
+    image: rformaggini/pubonline-app:latest
+    ports:
+      - 4200:4200
+    depends_on:
+      - pubonline-api
+    networks:
+      - pg-db-network
+    restart: always
+    links:
+      - pubonline-api
 
 networks:
   pg-db-network:
