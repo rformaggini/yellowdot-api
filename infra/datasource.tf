@@ -1,9 +1,9 @@
 data "aws_ami" "pubonline-api-ami" {
   most_recent = true
-  owners = ["137112412989"]
+  owners = ["099720109477"]
 
   filter {
     name = "name"
-    values = ["al2023-ami-2023.5.20240903.0-kernel-6.1-x86_64"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20240701"]
   }
 }
