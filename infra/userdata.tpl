@@ -21,17 +21,20 @@
 #access user root
     sudo su
 
-#create project folder
-    mkdir ~/project
-    cd ~/project
+#create directory for runner
+    sudo mkdir actions-runner && cd actions-runner
 
-#clone your project from git repository
-    git clone https://github.com/rformaggini/yellowdot-api.git
-    cd yellowdot-api
-    git checkout master
-    git pull
-    cd docker
+#download runner
+    sudo curl -o actions-runner-linux-x64-2.319.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.319.1/actions-runner-linux-x64-2.319.1.tar.gz
 
-#run your docker compose file
+#extract runner
+    sudo tar xzf ./actions-runner-linux-x64-2.319.1.tar.gz
 
-    docker-compose -f docker-compose.yaml up -d --force-recreate --remove-orphans
+#configuring runner to conect EC2
+    sudo ./config.sh --url https://github.com/rformaggini/yellowdot-api --token AMTFRHHERMCTLU7C44DZDELG4WX66
+
+#installs svc agent job
+    sudo ./svc.sh install
+
+#start the listing job
+    sudo ./svc.sh start
