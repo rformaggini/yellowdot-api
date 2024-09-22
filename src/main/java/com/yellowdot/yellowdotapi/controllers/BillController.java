@@ -74,4 +74,16 @@ public class BillController {
         return ResponseEntity.ok(billService.getBillByTableNumber(number));
     }
 
+    @GetMapping("/countByStatusOpen")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
+    public ResponseEntity<Integer> countByStatusOpen() {
+        return ResponseEntity.ok(billService.countBillsOpen());
+    }
+
+    @GetMapping("/countByStatusPaid")
+    @PreAuthorize("hasAnyAuthority('SCOPE_ADMIN', 'SCOPE_STAFF')")
+    public ResponseEntity<Integer> countByStatusPaid() {
+        return ResponseEntity.ok(billService.countBillsPaid());
+    }
+
 }

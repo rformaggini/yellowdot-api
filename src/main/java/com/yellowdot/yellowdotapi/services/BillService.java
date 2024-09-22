@@ -22,5 +22,8 @@ public interface BillService {
     BillDto getBillByTableNumber(Integer number) throws EntityNotFoundException;
     BillDto getBillById(Integer id) throws EntityNotFoundException;
     Bill findBillbyOrder(Order order);
+    Integer countBillsOpen();
+    Integer countBillsPaid();
+
 
 }

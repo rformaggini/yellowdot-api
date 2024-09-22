@@ -109,5 +109,15 @@ public class BillServiceImpl implements BillService {
     public Bill findBillbyOrder(Order order){
         return billRepository.findByOrder(order);
     }
+
+    @Override
+    public Integer countBillsOpen() {
+        return billRepository.countByStatusEquals(PaymentStatus.OPENED);
+    }
+
+    @Override
+    public Integer countBillsPaid() {
+        return billRepository.countByStatusEquals(PaymentStatus.PAID);
+    }
 }
 

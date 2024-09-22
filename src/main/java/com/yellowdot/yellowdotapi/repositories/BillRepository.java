@@ -15,5 +15,6 @@ public interface BillRepository extends JpaRepository<Bill, Integer> {
     Bill findByPubTable(PubTable table);
     List<Bill> findAllByStatusEquals(PaymentStatus status);
     Bill findByOrder(Order order);
+    Integer countByStatusEquals(PaymentStatus status);
 
 }
