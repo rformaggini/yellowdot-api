@@ -16,22 +16,22 @@
     sudo systemctl enable containerd.service
 
 #install docker compose
-    sudo apt install docker-compose -y
+    #sudo apt install docker-compose -y
 
 #access user root
     sudo su
 
 #create directory for runner
-    sudo mkdir actions-runner && cd actions-runner
+    mkdir actions-runner && cd actions-runner
 
 #download runner
-    sudo curl -o actions-runner-linux-x64-2.319.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.319.1/actions-runner-linux-x64-2.319.1.tar.gz
+    curl -o actions-runner-linux-x64-2.319.1.tar.gz -L https://github.com/actions/runner/releases/download/v2.319.1/actions-runner-linux-x64-2.319.1.tar.gz
 
 #extract runner
-    sudo tar xzf ./actions-runner-linux-x64-2.319.1.tar.gz
+    tar xzf ./actions-runner-linux-x64-2.319.1.tar.gz
 
 #configuring runner to conect EC2
-    sudo ./config.sh --url https://github.com/rformaggini/yellowdot-api --token AMTFRHHERMCTLU7C44DZDELG4WX66
+    RUNNER_ALLOW_RUNASROOT=true ./config.sh --url https://github.com/rformaggini/yellowdot-api --token AMTFRHFFSF6U2TMK4KIUTM3G73JVQ
 
 #installs svc agent job
     sudo ./svc.sh install

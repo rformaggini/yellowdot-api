@@ -58,7 +58,7 @@ resource "aws_instance" "pubonline-api-ec2" {
   }
 
   tags = {
-    "name" = "pubonline-api-ec2"
+    "Name" = "spring-api"
   }
 
 }
